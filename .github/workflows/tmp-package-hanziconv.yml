@@ -1,0 +1,30 @@
+name: Temporary Hanzi converter package
+
+on:
+  push:
+    branches:
+      - tmp-whisper-model-20260810
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Package public converter source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/berniey/hanziconv.git hanziconv-src
+          rm -rf hanziconv-src/.git
+      - name: Upload utility
+        uses: actions/upload-artifact@v4
+        with:
+          name: hanziconv-source
+          path: hanziconv-src
+          compression-level: 6
+          retention-days: 1
+          if-no-files-found: error
